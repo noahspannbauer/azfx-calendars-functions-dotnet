@@ -14,8 +14,9 @@ namespace azfx_calendars_functions_dotnet
     {
         public static readonly HttpClient client = new HttpClient();
 
+        [Disable("IS_DISABLED")]
         [FunctionName("GetGames")]
-        public static async Task Run([TimerTrigger("0 30 19 * * *")]TimerInfo myTimer, ILogger log)
+        public static async Task Run([TimerTrigger("0 0 12 * * *")]TimerInfo myTimer, ILogger log)
         {
             try 
             {
