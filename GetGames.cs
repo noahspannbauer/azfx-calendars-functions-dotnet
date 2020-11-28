@@ -20,7 +20,7 @@ namespace azfx_calendars_functions_dotnet
         {
             try 
             {
-                HttpResponseMessage teamsResponse = await client.GetAsync("https://statsapi.mlb.com/api/v1/teams?sportId=1");
+                HttpResponseMessage teamsResponse = await client.GetAsync("https://statsapi.mlb.com/api/v1/teams?sportId=1&teamId=142");
                 string teamsResponseBody = await teamsResponse.Content.ReadAsStringAsync();
                 Teams.Root teams = JsonConvert.DeserializeObject<Teams.Root>(teamsResponseBody);
                 string[] scopes = new string[] { "https://graph.microsoft.com/.default" };
@@ -48,8 +48,8 @@ namespace azfx_calendars_functions_dotnet
                     {
                         foreach (Schedule.Game game in date.games)
                         {
-                            string opponent = game.teams.home.team.id == team.id ? game.teams.away.team.name : game.teams.home.team.name;
                             Boolean isHomeTeam = game.teams.home.team.id == team.id ? true : false;
+                            string opponent = game.teams.home.team.id == team.id ? game.teams.away.team.name : game.teams.home.team.name;
                             Dictionary<string, object> additionalData = new Dictionary<string, object>();
                             List<string> gameType = new List<string>();
                             string gamePk = game.gamePk.ToString();
@@ -85,8 +85,9 @@ namespace azfx_calendars_functions_dotnet
                                     break;
                             }
 
-                            additionalData.Add("Title", opponent);
+                            additionalData.Add("Title", teamName);
                             additionalData.Add("IsHomeTeam", isHomeTeam);
+                            additionalData.Add("Opponent", opponent);
                             additionalData.Add("Location", game.venue.name);
                             additionalData.Add("GameType", gameType[0].ToString());
                             additionalData.Add("GameStatus", game.status.detailedState);
@@ -122,8 +123,8 @@ namespace azfx_calendars_functions_dotnet
                                     
                                     foreach (KeyValuePair<string, object> entry in listItemFields) {
                                         if (entry.Key != "@odata.etag") {
-                                            var listItemFieldValue = entry.Value.ToString();
-                                            var additionalDataKeyValue = additionalData[entry.Key].ToString();
+                                            string listItemFieldValue = entry.Value.ToString();
+                                            string additionalDataKeyValue = additionalData[entry.Key].ToString();
                                             
                                             if (listItemFieldValue != additionalDataKeyValue) {
                                                 fieldValuesToUpdate.Add(entry.Key, additionalDataKeyValue);
