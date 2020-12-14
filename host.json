@@ -1,4 +1,5 @@
 {
+    "functionTimeout": "23:59:59",
     "version": "2.0",
     "logging": {
         "applicationInsights": {

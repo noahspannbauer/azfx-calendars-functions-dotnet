@@ -20,7 +20,7 @@ namespace azfx_calendars_functions_dotnet
         {
             try 
             {
-                HttpResponseMessage teamsResponse = await client.GetAsync("https://statsapi.mlb.com/api/v1/teams?sportId=1&teamId=142");
+                HttpResponseMessage teamsResponse = await client.GetAsync("https://statsapi.mlb.com/api/v1/teams?sportId=1");
                 string teamsResponseBody = await teamsResponse.Content.ReadAsStringAsync();
                 Teams.Root teams = JsonConvert.DeserializeObject<Teams.Root>(teamsResponseBody);
                 string[] scopes = new string[] { "https://graph.microsoft.com/.default" };
@@ -41,7 +41,7 @@ namespace azfx_calendars_functions_dotnet
                     string responseBody = await response.Content.ReadAsStringAsync();
                     Schedule.Root schedule = JsonConvert.DeserializeObject<Schedule.Root>(responseBody);
 
-                    string siteName = team.name.Replace(" ", String.Empty);
+                    string siteName = teamName.Replace(".", "").Replace(" ", String.Empty);
                     string serverRelativeUrl = string.Format("/sites/{0}", siteName);
 
                     foreach (Schedule.Date date in schedule.dates)
